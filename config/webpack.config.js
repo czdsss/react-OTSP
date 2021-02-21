@@ -420,6 +420,7 @@ module.exports = function (webpackEnv) {
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
+                  ["import" , {libraryName: "antd", style:'css'}]
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -507,7 +508,14 @@ module.exports = function (webpackEnv) {
                     : isEnvDevelopment,
                 },
                 'sass-loader'
-              ),
+              ).concat({
+		loader: 'sass-resources-loader',
+		options: {
+			resources:[
+				path.resolve(__dirname,'./../src/styles/main.scss')
+			]
+		}
+	      }),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
               // Remove this when webpack adds a warning or an error for this.
@@ -547,6 +555,10 @@ module.exports = function (webpackEnv) {
                 name: 'static/media/[name].[hash:8].[ext]',
               },
             },
+	    {
+		    test:/\.scss$/,
+		    loaders:['style-loader','css-loader','sass-loader'],
+	    }
             // ** STOP ** Are you adding a new loader?
             // Make sure to add the new loader(s) before the "file" loader.
           ],
